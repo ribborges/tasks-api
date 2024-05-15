@@ -7,7 +7,7 @@ import client from "./database/mongo";
 // Set up the express app
 const app = express();
 const PORT = 3000;
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = ["http://localhost:5173", "https://richard-tasks-app.vercel.app/"];
 const options: cors.CorsOptions = {
     origin: allowedOrigins,
 };
