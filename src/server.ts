@@ -80,7 +80,6 @@ app.use(tasksRouter);
 async function startServer() {
     try {
         await connectToMongoDB();
-        await setupDatabase();
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
         });
