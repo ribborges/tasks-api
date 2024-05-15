@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import tasksRouter from "./routes/tasks";
 
 // Set up the express app
 const app = express();
@@ -16,6 +17,8 @@ app.use(express.json());
 app.get("/", (req, res) => {
     res.send("Hello World!");
 });
+
+app.use(tasksRouter);
 
 // Start the server
 app.listen(port, () => {
