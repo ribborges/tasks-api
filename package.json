@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch --env-file .env src/server.ts",
-    "build": "install && tsup src --format esm",
+    "build": "install; tsup src --format esm",
     "start": "node dist/server.mjs"
   },
   "author": "Richard",
