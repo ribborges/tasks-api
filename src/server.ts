@@ -64,9 +64,7 @@ async function insertMockData() {
     }
 }
 
-app.use(cors({
-    origin: 'https://tasks-okuzpyjt5-ribborges-projects.vercel.app/'
-}));
+app.use(cors());
 app.use(express.json());
 
 // Default route
