@@ -7,10 +7,6 @@ import client from "./database/mongo";
 // Set up the express app
 const app = express();
 const PORT = 3000;
-const allowedOrigins = ["*"];
-const options: cors.CorsOptions = {
-    origin: allowedOrigins,
-};
 
 async function connectToMongoDB() {
     try {
@@ -68,7 +64,9 @@ async function insertMockData() {
     }
 }
 
-app.use(cors(options));
+app.use(cors({
+    origin: 'https://tasks-okuzpyjt5-ribborges-projects.vercel.app/'
+}));
 app.use(express.json());
 
 // Default route
