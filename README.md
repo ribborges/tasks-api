@@ -4,7 +4,7 @@
 
 Download and install [node.js](https://nodejs.org/en).
 
-Create a .env and set the variable DB_USER and DB_PASSWORD to your MongoDB cluster user and password.
+Set the .env variable to your MongoDB URI (Variable name: MONGO_URI).
 
 Open your terminal/cmd on the repo directory and run:
 
@@ -15,3 +15,5 @@ Open your terminal/cmd on the repo directory and run:
 ```bash
 > npm run dev
 ```
+
+[APP repo](https://github.com/ribborges/tasks-app)
