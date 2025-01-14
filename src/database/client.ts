@@ -1,10 +1,9 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
-import "dotenv/config";
 
-const uri = process.env.MONGO_URI;
+import { dbURI } from "../config/env";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri!, {
+const client = new MongoClient(dbURI!, {
     serverApi: {
         version: ServerApiVersion.v1,
         strict: true,

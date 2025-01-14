@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
 
-import client from '../database/mongo';
+import client from '../database/client';
 
 export const createTask = async (req: Request, res: Response) => {
     try {
