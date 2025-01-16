@@ -1,5 +1,8 @@
 import client from "./client";
 
+const dbName = 'task-manager';
+
+// Connect to the MongoDB database
 async function connectDB() {
     try {
         await client.connect();
@@ -9,13 +12,24 @@ async function connectDB() {
     }
 }
 
-async function setupDatabase() {
+// Close the MongoDB connection
+async function closeDB() {
+    try {
+        await client.close();
+        console.log('Closed MongoDB connection');
+    } catch (error) {
+        console.error('Error closing MongoDB connection:', error);
+    }
+}
+
+async function setupDB() {
     try {
         // Connect to the MongoDB database
-        const database = client.db('task-manager');
+        const database = client.db(dbName);
 
         // Create a collection if it doesn't exist
         await database.createCollection('tasks');
+        await database.createCollection('users');
         console.log('Tasks collection created');
 
         console.log('Database setup completed');
@@ -56,4 +70,4 @@ async function insertMockData() {
     }
 }
 
-export { connectDB, setupDatabase, insertMockData };
+export { dbName, connectDB, closeDB, setupDB, insertMockData };
