@@ -32,7 +32,7 @@ async function login(req: Request, res: Response) {
         return;
     }
 
-    const token = genToken(user.auth.salt);
+    const token = genToken(user._id.toString());
 
     res.cookie('token', token, {
         path: '/',
@@ -84,7 +84,7 @@ async function register(req: Request, res: Response) {
             createdAt: new Date()
         });
 
-        const token = genToken(salt);
+        const token = genToken(user._id.toString());
 
         res.cookie('token', token, {
             path: '/',
