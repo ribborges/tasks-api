@@ -108,4 +108,17 @@ async function register(req: Request, res: Response) {
     }
 }
 
-export { login, register };
+async function logout(req: Request, res: Response) {
+    res.clearCookie('token', {
+        path: '/',
+        httpOnly: true,
+        sameSite: true,
+        secure: true
+    });
+
+    res.status(200).send('Logged out successfully');
+
+    return;
+}
+
+export { login, register, logout };
