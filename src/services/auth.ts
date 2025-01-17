@@ -36,7 +36,10 @@ const createUser = async (user: UserSchema) => {
 
         if (!result.acknowledged) throw new Error('Error creating user');
 
-        return result; // Returns the user document
+        return {
+            _id: result.insertedId,
+            ...user
+        }; // Returns the user document
     } catch (error) {
         console.error('Error creating user:', error);
         throw new Error('Error creating user');

@@ -5,7 +5,6 @@ export type UserSchema = {
     auth: {
         password: string;
         salt: string;
-        token?: string;
     };
     profilePic?: string;
     createdAt: Date;
