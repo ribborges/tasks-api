@@ -9,7 +9,7 @@ import { secret } from "@/config/env";
 const collectionName = 'users';
 
 // Get user by username or email
-const getUser = async ({ username, email }: { username?: string, email?: string }): Promise<WithId<Document> | null> => {
+async function getUser ({ username, email }: { username?: string, email?: string }): Promise<WithId<Document> | null> {
     try {
         await connectDB();
         const db = client.db(dbName);
@@ -28,7 +28,7 @@ const getUser = async ({ username, email }: { username?: string, email?: string 
     }
 }
 
-const createUser = async (user: UserSchema) => {
+async function createUser (user: UserSchema) {
     try {
         await connectDB();
         const db = client.db(dbName);
@@ -50,7 +50,7 @@ const createUser = async (user: UserSchema) => {
     }
 };
 
-const getUserByToken = async (token: string) => {
+async function getUserByToken (token: string) {
     try {
         const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
         const userId = ObjectId.createFromHexString(decoded.id);
