@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { get } from 'lodash';
 
-import { getUsers } from '@/services/user';
+import { getUsers, getUserById, deleteUserById, updateUserById } from '@/services/user';
 
 async function getLogguedUser(req: Request, res: Response) {
     try {
@@ -14,7 +14,7 @@ async function getLogguedUser(req: Request, res: Response) {
     }
 }
 
-const getAllUsers = async (req: Request, res: Response) => {
+async function getAllUsers(req: Request, res: Response) {
     try {
         const users = await getUsers();
 
@@ -26,4 +26,45 @@ const getAllUsers = async (req: Request, res: Response) => {
     }
 };
 
-export { getLogguedUser, getAllUsers };
+async function deleteUser(req: Request, res: Response) {
+    try {
+        const { id } = req.params;
+        await deleteUserById(id);
+        res.status(200).json({ message: 'User deleted successfully' });
+        return;
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        throw new Error('Error deleting user');
+    }
+}
+
+async function updateUser(req: Request, res: Response) {
+    try {
+        const { id } = req.params;
+        const { username, name } = req.body;
+
+        if (!username) {
+            res.status(400).json({ message: 'Missing username' });
+            return;
+        }
+
+        const user = await getUserById(id);
+
+        if (!user) {
+            res.status(404).json({ message: 'User not found' });
+            return;
+        }
+
+        await updateUserById(id, {
+            username,
+            name
+        });
+
+        res.status(200).json({ message: 'User updated successfully' });
+    } catch (error) {
+        console.error('Error updating user:', error);
+        throw new Error('Error updating user');
+    }
+}
+
+export { getLogguedUser, getAllUsers, deleteUser, updateUser };

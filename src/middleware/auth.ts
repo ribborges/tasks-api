@@ -1,5 +1,5 @@
 import {  Request, Response, NextFunction } from 'express';
-import { identity, merge } from 'lodash';
+import { get, merge } from 'lodash';
 
 import { getUserByToken } from '@/services/auth';
 
@@ -28,4 +28,26 @@ async function isAuth(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-export { isAuth };
+const isOwner = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params;
+        const currentId = get(req, 'identity._id') as unknown as string;
+
+        if (!currentId) {
+            res.status(401).json({ message: 'Unauthorized' });
+            return;
+        }
+        
+        if (currentId.toString() !== id) {
+            res.status(403).json({ message: 'Forbidden' });
+            return;
+        }
+
+        next();
+    } catch (error) {
+        console.log('Error checking ownership:', error);
+        res.status(500).json({ message: 'Error checking ownership' });        
+    }
+};
+
+export { isAuth, isOwner };
