@@ -5,8 +5,8 @@ import { secret } from '@/config/env';
 
 const random = () => crypto.randomBytes(128).toString('base64');
 
-const genToken = (salt: string) => {
-    return jwt.sign({ salt }, secret, {
+const genToken = (id: string) => {
+    return jwt.sign({ id }, secret, {
         expiresIn: "30d",
     });
 };

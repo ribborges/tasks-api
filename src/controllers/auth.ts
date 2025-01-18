@@ -6,7 +6,8 @@ import { createUser, getUser } from '@/services/auth';
 import { hashPassword, genToken, random } from '@/helpers/auth';
 
 async function login(req: Request, res: Response) {
-    const { username, password } = req.body;
+    try {
+        const { username, password } = req.body;
 
     if (!username || !password) {
         res.status(400).send('Missing required fields');
@@ -50,6 +51,10 @@ async function login(req: Request, res: Response) {
     });
 
     return;
+    } catch (error) {
+        console.error('Error logging in user:', error);
+        res.status(500).send('Error logging in user');
+    }
 }
 
 async function register(req: Request, res: Response) {
@@ -109,16 +114,21 @@ async function register(req: Request, res: Response) {
 }
 
 async function logout(req: Request, res: Response) {
-    res.clearCookie('token', {
-        path: '/',
-        httpOnly: true,
-        sameSite: true,
-        secure: true
-    });
-
-    res.status(200).send('Logged out successfully');
-
-    return;
+    try {
+        res.clearCookie('token', {
+            path: '/',
+            httpOnly: true,
+            sameSite: true,
+            secure: true
+        });
+    
+        res.status(200).send('Logged out successfully');
+    
+        return;
+    } catch (error) {
+        console.error('Error logging out user:', error);
+        res.status(500).send('Error logging out user');
+    }
 }
 
 export { login, register, logout };

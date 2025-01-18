@@ -1,8 +1,10 @@
-import { WithId } from "mongodb";
+import { WithId, ObjectId } from "mongodb";
+import jwt from "jsonwebtoken";
 
 import client from "@/database/client";
 import { closeDB, connectDB, dbName } from "@/database/operations";
 import { UserSchema } from "@/types/user";
+import { secret } from "@/config/env";
 
 const collectionName = 'users';
 
@@ -48,5 +50,26 @@ const createUser = async (user: UserSchema) => {
     }
 };
 
+const getUserByToken = async (token: string) => {
+    try {
+        const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
+        const userId = ObjectId.createFromHexString(decoded.id);
+        
+        await connectDB();
+        const db = client.db(dbName);
+        const collection = db.collection(collectionName);
 
-export { getUser, createUser };
+        const user = await collection.findOne({ _id: userId }, { projection: { auth: 0 } }) as WithId<Document>;
+
+        if (!user) return null;
+
+        return user;
+    } catch (error) {
+        console.error('Error when searching for user by token:', error);
+        throw new Error('Error when searching for user by token');
+    } finally {
+        await closeDB();
+    }
+}
+
+export { getUser, createUser, getUserByToken };
