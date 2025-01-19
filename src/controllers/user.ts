@@ -43,11 +43,6 @@ async function updateUser(req: Request, res: Response) {
         const { id } = req.params;
         const { username, name } = req.body;
 
-        if (!username) {
-            res.status(400).json({ message: 'Missing username' });
-            return;
-        }
-
         const user = await getUserById(id);
 
         if (!user) {
