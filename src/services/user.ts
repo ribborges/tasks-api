@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import client from "@/database/client";
 import { closeDB, connectDB, dbName } from "@/database/operations";
 import filterNullFields from "@/util/filterNullFields";
+import auth from "@/routes/auth";
 
 const collectionName = 'users';
 
@@ -76,7 +77,29 @@ async function updateUserById(id: string, data: { username?: string, name?: stri
     } catch (error) {
         console.error('Error updating user:', error);
         throw new Error('Error updating user');
+    } finally {
+        await closeDB();
     }
 };
 
-export { getUsers, getUserById, deleteUserById, updateUserById };
+async function updatePasswordById(id: string, auth: { salt: string, password: string }) {
+    try {
+        await connectDB();
+        const db = client.db(dbName);
+        const collection = db.collection(collectionName);
+
+        const result = await collection.updateOne(
+            { _id: ObjectId.createFromHexString(id) },
+            { $set: { auth } }
+        );
+
+        return result; // Returns an UpdateResult object
+    } catch (error) {
+        console.error('Error updating password:', error);
+        throw new Error('Error updating password');
+    } finally {
+        await closeDB();
+    }
+}
+
+export { getUsers, getUserById, deleteUserById, updateUserById, updatePasswordById };
