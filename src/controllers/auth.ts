@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
+import jwt from 'jsonwebtoken';
 
 import { UserSchema } from '@/types/user';
 import { createUser, getUser } from '@/services/auth';
 import { hashPassword, genToken, random } from '@/helpers/auth';
+import { secret } from '@/config/env';
 
 async function login(req: Request, res: Response) {
     try {
@@ -131,4 +133,21 @@ async function logout(req: Request, res: Response) {
     }
 }
 
-export { login, register, logout };
+async function status(req: Request, res: Response) {
+    try {
+        const token = req.cookies.token;
+        const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
+
+        if (!token || !decoded) {
+            res.status(401).send(false);
+            return;
+        }
+        
+        res.status(200).send(true);
+    } catch (error) {
+        console.error('Error checking user status:', error);
+        res.status(500).send('Error checking user status');
+    }
+}
+
+export { login, register, logout, status };
