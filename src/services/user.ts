@@ -58,7 +58,7 @@ async function deleteUserById (id: string) {
     }
 };
 
-async function updateUserById (id: string, data: { username?: string, name?: string }) {
+async function updateUserById (id: string, data: { username?: string, name?: string, profilePic?: string }) {
     try {
         await connectDB();
         const db = client.db(dbName);

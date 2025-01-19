@@ -41,7 +41,7 @@ async function deleteUser(req: Request, res: Response) {
 async function updateUser(req: Request, res: Response) {
     try {
         const { id } = req.params;
-        const { username, name } = req.body;
+        const { username, name, profilePic } = req.body;
 
         const user = await getUserById(id);
 
@@ -52,7 +52,8 @@ async function updateUser(req: Request, res: Response) {
 
         await updateUserById(id, {
             username,
-            name
+            name,
+            profilePic
         });
 
         res.status(200).json({ message: 'User updated successfully' });
