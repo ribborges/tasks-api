@@ -1,6 +1,8 @@
+import { ObjectId } from "mongodb";
+
 import client from "@/database/client";
 import { closeDB, connectDB, dbName } from "@/database/operations";
-import { ObjectId } from "mongodb";
+import filterNullFields from "@/util/filterNullFields";
 
 const collectionName = 'users';
 
@@ -22,7 +24,7 @@ async function getUsers() {
     }
 }
 
-async function getUserById (id: string) {
+async function getUserById(id: string) {
     try {
         await connectDB();
         const db = client.db(dbName);
@@ -30,7 +32,6 @@ async function getUserById (id: string) {
 
         const user = await collection.findOne({ _id: new ObjectId(id) });
 
-        console.log('User:', user);
         return user; // Returns the user document if found, or null if not        
     } catch (error) {
         console.error('Error getting user by ID:', error);
@@ -40,7 +41,7 @@ async function getUserById (id: string) {
     }
 };
 
-async function deleteUserById (id: string) {
+async function deleteUserById(id: string) {
     try {
         await connectDB();
         const db = client.db(dbName);
@@ -58,15 +59,19 @@ async function deleteUserById (id: string) {
     }
 };
 
-async function updateUserById (id: string, data: { username?: string, name?: string, profilePic?: string }) {
+async function updateUserById(id: string, data: { username?: string, name?: string, profilePic?: string }) {
     try {
         await connectDB();
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
-        const result = await collection.updateOne({ _id: ObjectId.createFromHexString(id) }, { $set: data });
+        const filteredData = filterNullFields(data);
 
-        console.log('Updated:', result);
+        const result = await collection.updateOne(
+            { _id: ObjectId.createFromHexString(id) },
+            { $set: filteredData && { updatedAt: new Date() } }
+        );
+
         return result; // Returns an UpdateResult object
     } catch (error) {
         console.error('Error updating user:', error);

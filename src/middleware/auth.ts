@@ -45,7 +45,7 @@ const isOwner = async (req: Request, res: Response, next: NextFunction) => {
 
         next();
     } catch (error) {
-        console.log('Error checking ownership:', error);
+        console.error('Error checking ownership:', error);
         res.status(500).json({ message: 'Error checking ownership' });        
     }
 };
