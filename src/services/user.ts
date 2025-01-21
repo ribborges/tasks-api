@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import { merge } from "lodash";
 
 import client from "@/database/client";
 import { closeDB, connectDB, dbName } from "@/database/operations";
@@ -67,9 +68,11 @@ async function updateUserById(id: string, data: { username?: string, name?: stri
 
         const filteredData = filterNullFields(data);
 
+        merge(filteredData, { updatedAt: new Date() });
+
         const result = await collection.updateOne(
             { _id: ObjectId.createFromHexString(id) },
-            { $set: filteredData && { updatedAt: new Date() } }
+            { $set: filteredData }
         );
 
         return result; // Returns an UpdateResult object
@@ -89,7 +92,7 @@ async function updatePasswordById(id: string, auth: { salt: string, password: st
 
         const result = await collection.updateOne(
             { _id: ObjectId.createFromHexString(id) },
-            { $set: { auth } }
+            { $set: { auth, updatedAt: new Date() } }
         );
 
         return result; // Returns an UpdateResult object
