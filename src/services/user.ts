@@ -3,7 +3,6 @@ import { ObjectId } from "mongodb";
 import client from "@/database/client";
 import { closeDB, connectDB, dbName } from "@/database/operations";
 import filterNullFields from "@/util/filterNullFields";
-import auth from "@/routes/auth";
 
 const collectionName = 'users';
 
