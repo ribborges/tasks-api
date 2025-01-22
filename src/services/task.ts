@@ -8,13 +8,13 @@ import filterNullFields from "@/util/filterNullFields";
 
 const collectionName = 'tasks';
 
-async function findUserTasks(userId: string) {
+async function findUserTasks(userId: ObjectId) {
     try {
         await connectDB();
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
-        const tasks = await collection.find({ userId: ObjectId.createFromHexString(userId) }).toArray();
+        const tasks = await collection.find({ userId: userId }).toArray();
 
         console.log('Tasks:', tasks);
         return tasks; // Returns an array of task documents
@@ -26,13 +26,13 @@ async function findUserTasks(userId: string) {
     }
 }
 
-async function findTask(id: string) {
+async function findTask(id: ObjectId) {
     try {
         await connectDB();
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
-        const task = await collection.findOne({ _id: ObjectId.createFromHexString(id) });
+        const task = await collection.findOne({ _id: id });
 
         return task; // Returns the task document if found, or null if not
     } catch (error) {
@@ -53,7 +53,7 @@ async function insertTask(data: TaskSchema) {
 
         merge(filteredData, { createdAt: new Date() });
 
-        const result = await collection.insertOne(data);
+        const result = await collection.insertOne(filteredData);
 
         if (!result.acknowledged) throw new Error('Error creating task');
 
@@ -93,13 +93,13 @@ async function updateTask(id: string, data: TaskSchema) {
     }
 }
 
-async function deleteTask(id: string) {
+async function deleteTask(id: ObjectId) {
     try {
         await connectDB();
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
-        const result = await collection.deleteOne({ _id: ObjectId.createFromHexString(id) });
+        const result = await collection.deleteOne({ _id: id });
 
         return result; // Returns a DeleteResult object
     } catch (error) {

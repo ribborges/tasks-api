@@ -23,7 +23,7 @@ async function login(req: Request, res: Response) {
             return;
         }
 
-        if (!user?.auth.salt) {
+        if (!user?.auth?.salt) {
             res.status(400).send('Invalid user data');
             return;
         }
@@ -87,8 +87,7 @@ async function register(req: Request, res: Response) {
             auth: {
                 password: hashPassword(salt, password),
                 salt: salt
-            },
-            createdAt: new Date()
+            }
         });
 
         const token = genToken(user._id.toString());

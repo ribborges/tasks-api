@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { get } from 'lodash';
+import { ObjectId } from 'mongodb';
 
 import { findAllUsers, findUser, deleteUser, updateUser, updatePassword } from '@/services/user';
 import { hashPassword, random } from '@/helpers/auth';
@@ -29,7 +30,14 @@ async function getAllUsers(req: Request, res: Response) {
 async function removeUser(req: Request, res: Response) {
     try {
         const { id } = req.params;
-        await deleteUser(id);
+
+        const result = await deleteUser(ObjectId.createFromHexString(id));
+
+        if (result.deletedCount === 0) {
+            res.status(404).send('User not found');
+            return;
+        }
+
         res.status(200).send('User deleted successfully');
     } catch (error) {
         console.error('Error deleting user:', error);
@@ -42,14 +50,14 @@ async function changeUser(req: Request, res: Response) {
         const { id } = req.params;
         const { username, name, profilePic } = req.body;
 
-        const user = await findUser(id);
+        const user = await findUser(ObjectId.createFromHexString(id));
 
         if (!user) {
             res.status(404).send('User not found');
             return;
         }
 
-        await updateUser(id, {
+        await updateUser(ObjectId.createFromHexString(id), {
             username,
             name,
             profilePic
@@ -67,7 +75,7 @@ async function changePassword(req: Request, res: Response) {
         const { id } = req.params;
         const { password } = req.body;
 
-        const user = await findUser(id);
+        const user = await findUser(ObjectId.createFromHexString(id));
 
         if (!user) {
             res.status(404).send('User not found');
@@ -86,7 +94,7 @@ async function changePassword(req: Request, res: Response) {
 
         const salt = random();
 
-        await updatePassword(id, { salt, password: hashPassword(salt, password) });
+        await updatePassword(ObjectId.createFromHexString(id), { password: hashPassword(salt, password), salt });
 
         res.status(200).send('Password updated successfully');
     } catch (error) {

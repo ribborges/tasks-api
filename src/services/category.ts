@@ -8,13 +8,13 @@ import filterNullFields from "@/util/filterNullFields";
 
 const collectionName = 'categories';
 
-async function findUserCategories(userId: string) {
+async function findUserCategories(userId: ObjectId) {
     try {
         await connectDB();
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
-        const categories = await collection.find({ userId: ObjectId.createFromHexString(userId) }).toArray();
+        const categories = await collection.find({ userId: userId }).toArray();
 
         console.log('Categories:', categories);
         return categories; // Returns an array of category documents
@@ -49,7 +49,11 @@ async function insertCategory(data: CategorySchema) {
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
-        const result = await collection.insertOne(data);
+        const filteredData = filterNullFields(data);
+        
+        merge(filteredData, { createdAt: new Date() });
+
+        const result = await collection.insertOne(filteredData);
 
         if (!result.acknowledged) throw new Error('Error creating task');
 

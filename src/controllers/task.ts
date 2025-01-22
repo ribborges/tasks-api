@@ -51,7 +51,7 @@ async function changeTask(req: Request, res: Response) {
         const { id } = req.params;
         const { categoryId, name, description, status, isImportant } = req.body;
 
-        const task = await findTask(id);
+        const task = await findTask(ObjectId.createFromHexString(id));
 
         if (!task) {
             res.status(404).send('Task not found');
@@ -77,7 +77,7 @@ async function removeTask(req: Request, res: Response) {
     try {
         const { id } = req.params;
 
-        const result = await deleteTask(id);
+        const result = await deleteTask(ObjectId.createFromHexString(id));
 
         if (result.deletedCount === 0) {
             res.status(404).send('Task not found');

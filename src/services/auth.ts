@@ -1,10 +1,12 @@
 import { WithId, ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
+import { merge } from "lodash";
 
 import client from "@/database/client";
 import { closeDB, connectDB, dbName } from "@/database/operations";
 import { UserSchema } from "@/types/user";
 import { secret } from "@/config/env";
+import filterNullFields from "@/util/filterNullFields";
 
 const collectionName = 'users';
 
@@ -49,19 +51,23 @@ async function getUserByToken(token: string) {
     }
 }
 
-async function insertUser(user: UserSchema) {
+async function insertUser(data: UserSchema) {
     try {
         await connectDB();
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
-        const result = await collection.insertOne(user);
+        const filteredData = filterNullFields(data);
+
+        merge(filteredData, { createdAt: new Date() });
+
+        const result = await collection.insertOne(filteredData);
 
         if (!result.acknowledged) throw new Error('Error creating user');
 
         return {
             _id: result.insertedId,
-            ...user
+            ...data
         }; // Returns the user document
     } catch (error) {
         console.error('Error creating user:', error);

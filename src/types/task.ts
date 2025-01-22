@@ -7,4 +7,6 @@ export type TaskSchema = {
     description?: string;
     status?: "pending" | "completed" | "in-progress";
     isImportant?: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
 }

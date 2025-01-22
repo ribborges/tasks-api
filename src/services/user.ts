@@ -4,6 +4,7 @@ import { merge } from "lodash";
 import client from "@/database/client";
 import { closeDB, connectDB, dbName } from "@/database/operations";
 import filterNullFields from "@/util/filterNullFields";
+import { AuthSchema, UserSchema } from "@/types/user";
 
 const collectionName = 'users';
 
@@ -25,13 +26,13 @@ async function findAllUsers() {
     }
 }
 
-async function findUser(id: string) {
+async function findUser(id: ObjectId) {
     try {
         await connectDB();
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
-        const user = await collection.findOne({ _id: new ObjectId(id) });
+        const user = await collection.findOne({ _id: id });
 
         return user; // Returns the user document if found, or null if not        
     } catch (error) {
@@ -42,13 +43,13 @@ async function findUser(id: string) {
     }
 };
 
-async function deleteUser(id: string) {
+async function deleteUser(id: ObjectId) {
     try {
         await connectDB();
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
-        const result = await collection.deleteOne({ _id: ObjectId.createFromHexString(id) });
+        const result = await collection.deleteOne({ _id: id });
 
         console.log('Deleted:', result);
         return result; // Returns a DeleteResult object
@@ -60,7 +61,7 @@ async function deleteUser(id: string) {
     }
 };
 
-async function updateUser(id: string, data: { username?: string, name?: string, profilePic?: string }) {
+async function updateUser(id: ObjectId, data: UserSchema) {
     try {
         await connectDB();
         const db = client.db(dbName);
@@ -71,7 +72,7 @@ async function updateUser(id: string, data: { username?: string, name?: string, 
         merge(filteredData, { updatedAt: new Date() });
 
         const result = await collection.updateOne(
-            { _id: ObjectId.createFromHexString(id) },
+            { _id: id },
             { $set: filteredData }
         );
 
@@ -84,15 +85,17 @@ async function updateUser(id: string, data: { username?: string, name?: string, 
     }
 };
 
-async function updatePassword(id: string, auth: { salt: string, password: string }) {
+async function updatePassword(id: ObjectId, auth: AuthSchema) {
     try {
         await connectDB();
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
+        merge(auth, { updatedAt: new Date() });
+
         const result = await collection.updateOne(
-            { _id: ObjectId.createFromHexString(id) },
-            { $set: { auth, updatedAt: new Date() } }
+            { _id: id },
+            { $set: auth }
         );
 
         return result; // Returns an UpdateResult object

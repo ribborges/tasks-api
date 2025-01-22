@@ -12,7 +12,7 @@ async function getUserCategories(req: Request, res: Response) {
             return;
         }
 
-        const categories = await findUserCategories(userId);
+        const categories = await findUserCategories(ObjectId.createFromHexString(userId));
 
         res.status(200).send(categories);
     } catch (error) {
@@ -49,8 +49,7 @@ async function createCategory(req: Request, res: Response) {
         await insertCategory({
             userId: ObjectId.createFromHexString(userId),
             name,
-            color,
-            createdAt: new Date()
+            color
         });
 
         res.status(201).send('Category created successfully');
