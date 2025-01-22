@@ -1,9 +1,10 @@
-export type Task = {
-    id: string;
-    categoryId: string;
-    name: string;
-    description: string;
-    status: boolean;
-    isImportant: boolean;
-    date: string;
+import { ObjectId } from "mongodb";
+
+export type TaskSchema = {
+    categoryId?: ObjectId;
+    userId?: ObjectId;
+    name?: string;
+    description?: string;
+    status?: "pending" | "completed" | "in-progress";
+    isImportant?: boolean;
 }
