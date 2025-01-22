@@ -1,4 +1,4 @@
-import {  Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { get, merge } from 'lodash';
 
 import { getUserByToken } from '@/services/auth';
@@ -15,11 +15,14 @@ async function isAuth(req: Request, res: Response, next: NextFunction) {
         const user = await getUserByToken(token);
 
         if (!user) {
-            res.status(404).send("User not found" );
+            res.status(404).send("User not found");
             return;
         }
 
-        merge(req, { identity: user } );
+        const { _id, ...userWithoutId } = user;
+        merge(req, { identity: { id: user._id, ...userWithoutId } });
+
+        console.log(typeof user._id);
 
         next();
     } catch (error) {
@@ -37,7 +40,7 @@ const isOwner = async (req: Request, res: Response, next: NextFunction) => {
             res.status(401).json({ message: 'Unauthorized' });
             return;
         }
-        
+
         if (currentId.toString() !== id) {
             res.status(403).json({ message: 'Forbidden' });
             return;
@@ -46,7 +49,7 @@ const isOwner = async (req: Request, res: Response, next: NextFunction) => {
         next();
     } catch (error) {
         console.error('Error checking ownership:', error);
-        res.status(500).json({ message: 'Error checking ownership' });        
+        res.status(500).json({ message: 'Error checking ownership' });
     }
 };
 

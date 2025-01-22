@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
+import { get } from 'lodash';
 
 import { insertCategory, deleteCategory, findUserCategories, findCategory, updateCategory } from '@/services/category';
 
@@ -31,6 +32,11 @@ async function getCategory(req: Request, res: Response) {
 
         const category = await findCategory(ObjectId.createFromHexString(id));
 
+        if (!category) {
+            res.status(404).send('Category not found');
+            return;
+        }
+
         res.status(200).send(category);
     } catch (error) {
         res.status(500).send('Error getting category');
@@ -39,15 +45,22 @@ async function getCategory(req: Request, res: Response) {
 
 async function createCategory(req: Request, res: Response) {
     try {
-        const { userId, name, color } = req.body;
+        const { id } = get(req, 'identity', { id: null });
 
-        if (!userId || !name) {
+        if (!id) {
+            res.status(401).send('Unauthorized');
+            return;
+        }
+
+        const { name, color } = req.body;
+
+        if (!name || !color) {
             res.status(400).send('Missing required fields');
             return;
         }
 
         await insertCategory({
-            userId: ObjectId.createFromHexString(userId),
+            userId: id,
             name,
             color
         });
@@ -74,7 +87,7 @@ async function changeCategory(req: Request, res: Response) {
             res.status(404).send('Category not found');
             return;
         }
-        
+
         await updateCategory(ObjectId.createFromHexString(id), {
             name,
             color
