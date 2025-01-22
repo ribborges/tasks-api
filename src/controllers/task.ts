@@ -77,6 +77,11 @@ async function removeTask(req: Request, res: Response) {
     try {
         const { id } = req.params;
 
+        if (!id) {
+            res.status(400).send('Missing task ID');
+            return;
+        }
+
         const result = await deleteTask(ObjectId.createFromHexString(id));
 
         if (result.deletedCount === 0) {

@@ -95,7 +95,12 @@ async function removeCategory(req: Request, res: Response) {
             return;
         }
 
-        await deleteCategory(ObjectId.createFromHexString(id));
+        const result = await deleteCategory(ObjectId.createFromHexString(id));
+
+        if (result.deletedCount === 0) {
+            res.status(404).send('Category not found');
+            return;
+        }
 
         res.status(200).send('Category deleted successfully');
     } catch (error) {

@@ -31,6 +31,11 @@ async function removeUser(req: Request, res: Response) {
     try {
         const { id } = req.params;
 
+        if (!id) {
+            res.status(400).send('Missing user ID');
+            return;
+        }
+
         const result = await deleteUser(ObjectId.createFromHexString(id));
 
         if (result.deletedCount === 0) {
