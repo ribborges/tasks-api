@@ -8,6 +8,6 @@ export default (router: Router) => {
     router.get("/category/list", isAuth, getUserCategories);
     router.get("/category/:id", isAuth, userOwnsCategory, getCategory);
     router.post("/category", isAuth, createCategory);
-    router.put("/category/:id", isAuth, userOwnsCategory, changeCategory);
+    router.patch("/category/:id", isAuth, userOwnsCategory, changeCategory);
     router.delete("/category/:id", isAuth, userOwnsCategory, removeCategory);
 };
