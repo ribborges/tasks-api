@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { get } from 'lodash';
 
-import { getUsers, getUserById, deleteUserById, updateUserById, updatePasswordById } from '@/services/user';
+import { findAllUsers, findUser, deleteUser, updateUser, updatePassword } from '@/services/user';
 import { hashPassword, random } from '@/helpers/auth';
 
 async function getLogguedUser(req: Request, res: Response) {
@@ -17,7 +17,7 @@ async function getLogguedUser(req: Request, res: Response) {
 
 async function getAllUsers(req: Request, res: Response) {
     try {
-        const users = await getUsers();
+        const users = await findAllUsers();
 
         res.status(200).json(users);
     } catch (error) {
@@ -26,10 +26,10 @@ async function getAllUsers(req: Request, res: Response) {
     }
 };
 
-async function deleteUser(req: Request, res: Response) {
+async function removeUser(req: Request, res: Response) {
     try {
         const { id } = req.params;
-        await deleteUserById(id);
+        await deleteUser(id);
         res.status(200).send('User deleted successfully');
     } catch (error) {
         console.error('Error deleting user:', error);
@@ -37,19 +37,19 @@ async function deleteUser(req: Request, res: Response) {
     }
 }
 
-async function updateUser(req: Request, res: Response) {
+async function changeUser(req: Request, res: Response) {
     try {
         const { id } = req.params;
         const { username, name, profilePic } = req.body;
 
-        const user = await getUserById(id);
+        const user = await findUser(id);
 
         if (!user) {
             res.status(404).send('User not found');
             return;
         }
 
-        await updateUserById(id, {
+        await updateUser(id, {
             username,
             name,
             profilePic
@@ -62,12 +62,12 @@ async function updateUser(req: Request, res: Response) {
     }
 }
 
-async function updatePassword(req: Request, res: Response) {
+async function changePassword(req: Request, res: Response) {
     try {
         const { id } = req.params;
         const { password } = req.body;
 
-        const user = await getUserById(id);
+        const user = await findUser(id);
 
         if (!user) {
             res.status(404).send('User not found');
@@ -86,7 +86,7 @@ async function updatePassword(req: Request, res: Response) {
 
         const salt = random();
 
-        await updatePasswordById(id, { salt, password: hashPassword(salt, password) });
+        await updatePassword(id, { salt, password: hashPassword(salt, password) });
 
         res.status(200).send('Password updated successfully');
     } catch (error) {
@@ -95,4 +95,4 @@ async function updatePassword(req: Request, res: Response) {
     }
 }
 
-export { getLogguedUser, getAllUsers, deleteUser, updateUser, updatePassword };
+export { getLogguedUser, getAllUsers, removeUser, changeUser, changePassword };

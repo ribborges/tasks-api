@@ -8,8 +8,7 @@ import { secret } from "@/config/env";
 
 const collectionName = 'users';
 
-// Get user by username or email
-async function getUser ({ username, email }: { username?: string, email?: string }): Promise<WithId<Document> | null> {
+async function findUserByAuth({ username, email }: { username?: string, email?: string }) {
     try {
         await connectDB();
         const db = client.db(dbName);
@@ -28,7 +27,29 @@ async function getUser ({ username, email }: { username?: string, email?: string
     }
 }
 
-async function createUser (user: UserSchema) {
+async function getUserByToken(token: string) {
+    try {
+        const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
+        const userId = ObjectId.createFromHexString(decoded.id);
+
+        await connectDB();
+        const db = client.db(dbName);
+        const collection = db.collection(collectionName);
+
+        const user = await collection.findOne({ _id: userId }, { projection: { auth: 0 } }) as WithId<Document>;
+
+        if (!user) return null;
+
+        return user;
+    } catch (error) {
+        console.error('Error when searching for user by token:', error);
+        throw new Error('Error when searching for user by token');
+    } finally {
+        await closeDB();
+    }
+}
+
+async function insertUser(user: UserSchema) {
     try {
         await connectDB();
         const db = client.db(dbName);
@@ -50,26 +71,4 @@ async function createUser (user: UserSchema) {
     }
 };
 
-async function getUserByToken (token: string) {
-    try {
-        const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
-        const userId = ObjectId.createFromHexString(decoded.id);
-        
-        await connectDB();
-        const db = client.db(dbName);
-        const collection = db.collection(collectionName);
-
-        const user = await collection.findOne({ _id: userId }, { projection: { auth: 0 } }) as WithId<Document>;
-
-        if (!user) return null;
-
-        return user;
-    } catch (error) {
-        console.error('Error when searching for user by token:', error);
-        throw new Error('Error when searching for user by token');
-    } finally {
-        await closeDB();
-    }
-}
-
-export { getUser, createUser, getUserByToken };
+export { findUserByAuth, getUserByToken, insertUser };

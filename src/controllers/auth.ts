@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
 
 import { UserSchema } from '@/types/user';
-import { createUser, getUser } from '@/services/auth';
+import { insertUser, findUserByAuth } from '@/services/auth';
 import { hashPassword, genToken, random } from '@/helpers/auth';
 import { secret } from '@/config/env';
 
@@ -16,7 +16,7 @@ async function login(req: Request, res: Response) {
             return;
         }
 
-        const user = await getUser({ username }) as ({ _id: ObjectId } & UserSchema) | null;
+        const user = await findUserByAuth({ username }) as ({ _id: ObjectId } & UserSchema) | null;
 
         if (!user) {
             res.status(404).send('User not found');
@@ -73,14 +73,14 @@ async function register(req: Request, res: Response) {
             return;
         }
 
-        if (await getUser({ username, email })) {
+        if (await findUserByAuth({ username, email })) {
             res.status(400).send('User already exists');
             return;
         }
 
         const salt = random();
 
-        const user = await createUser({
+        const user = await insertUser({
             username,
             name,
             email,

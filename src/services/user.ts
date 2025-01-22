@@ -7,7 +7,7 @@ import filterNullFields from "@/util/filterNullFields";
 
 const collectionName = 'users';
 
-async function getUsers() {
+async function findAllUsers() {
     try {
         await connectDB();
         const db = client.db(dbName);
@@ -25,7 +25,7 @@ async function getUsers() {
     }
 }
 
-async function getUserById(id: string) {
+async function findUser(id: string) {
     try {
         await connectDB();
         const db = client.db(dbName);
@@ -42,7 +42,7 @@ async function getUserById(id: string) {
     }
 };
 
-async function deleteUserById(id: string) {
+async function deleteUser(id: string) {
     try {
         await connectDB();
         const db = client.db(dbName);
@@ -60,7 +60,7 @@ async function deleteUserById(id: string) {
     }
 };
 
-async function updateUserById(id: string, data: { username?: string, name?: string, profilePic?: string }) {
+async function updateUser(id: string, data: { username?: string, name?: string, profilePic?: string }) {
     try {
         await connectDB();
         const db = client.db(dbName);
@@ -84,7 +84,7 @@ async function updateUserById(id: string, data: { username?: string, name?: stri
     }
 };
 
-async function updatePasswordById(id: string, auth: { salt: string, password: string }) {
+async function updatePassword(id: string, auth: { salt: string, password: string }) {
     try {
         await connectDB();
         const db = client.db(dbName);
@@ -104,4 +104,4 @@ async function updatePasswordById(id: string, auth: { salt: string, password: st
     }
 }
 
-export { getUsers, getUserById, deleteUserById, updateUserById, updatePasswordById };
+export { findAllUsers, findUser, deleteUser, updateUser, updatePassword };
