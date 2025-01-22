@@ -2,14 +2,16 @@ import { Router } from "express";
 
 import auth from "./auth";
 import user from "./user";
-import tasks from "./tasks";
+import category from "./category";
+import task from "./task";
 
 const router = Router();
 
 export default (): Router => {
     auth(router);
     user(router);
-    tasks(router);
+    category(router);
+    task(router);
 
     return router;
 }
