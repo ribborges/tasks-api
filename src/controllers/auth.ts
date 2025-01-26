@@ -46,9 +46,13 @@ async function login(req: Request, res: Response) {
         });
 
         res.status(201).json({
-            user: user.username,
+            id: user._id,
+            username: user.username,
             name: user.name,
             email: user.email,
+            profilePic: user.profilePic,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
             token
         });
 
@@ -101,9 +105,11 @@ async function register(req: Request, res: Response) {
         });
 
         res.status(201).json({
-            user: user.username,
+            id: user._id,
+            username: user.username,
             name: user.name,
             email: user.email,
+            createdAt: user.createdAt,
             token
         });
 
