@@ -8,14 +8,23 @@ import { UserSchema } from '@/types/user';
 
 async function getLogguedUser(req: Request, res: Response) {
     try {
-        const user = get(req, 'identity') as unknown as ({ _id: ObjectId } & UserSchema) | null;
+        const user = get(req, 'identity') as unknown as ({ id: ObjectId } & UserSchema) | null;
 
         if (!user) {
             res.status(404).send('User not found');
             return;
         }
 
-        res.status(200).json(user);
+        res.status(200).json({
+            id: user.id,
+            username: user.username,
+            name: user.name,
+            email: user.email,
+            profilePic: user.profilePic,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+            token: req.cookies['token']
+        });
     } catch (error) {
         console.error("Error: ", error);
         res.status(500).send("Internal server error");
