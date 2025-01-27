@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
+import { ObjectId } from 'mongodb';
 import { get, merge } from 'lodash';
 
 import { getUserByToken } from '@/services/auth';
+import { UserSchema } from '@/types/user';
 
 async function isAuth(req: Request, res: Response, next: NextFunction) {
     try {
@@ -12,7 +14,7 @@ async function isAuth(req: Request, res: Response, next: NextFunction) {
             return;
         }
 
-        const user = await getUserByToken(token);
+        const user = await getUserByToken(token) as ({ _id: ObjectId } & UserSchema) | null;
 
         if (!user) {
             res.status(404).send("User not found");
@@ -20,9 +22,7 @@ async function isAuth(req: Request, res: Response, next: NextFunction) {
         }
 
         const { _id, ...userWithoutId } = user;
-        merge(req, { identity: { id: user._id, ...userWithoutId } });
-
-        console.log(typeof user._id);
+        merge(req, { identity: { id: _id, ...userWithoutId } });
 
         next();
     } catch (error) {

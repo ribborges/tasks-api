@@ -4,10 +4,16 @@ import { ObjectId } from 'mongodb';
 
 import { findAllUsers, findUser, deleteUser, updateUser, updatePassword } from '@/services/user';
 import { hashPassword, random } from '@/helpers/auth';
+import { UserSchema } from '@/types/user';
 
 async function getLogguedUser(req: Request, res: Response) {
     try {
-        const user = get(req, 'identity');
+        const user = get(req, 'identity') as unknown as ({ _id: ObjectId } & UserSchema) | null;
+
+        if (!user) {
+            res.status(404).send('User not found');
+            return;
+        }
 
         res.status(200).json(user);
     } catch (error) {
