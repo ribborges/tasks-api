@@ -16,7 +16,6 @@ async function findUserTasks(userId: ObjectId) {
 
         const tasks = await collection.find({ userId: userId }).toArray();
 
-        console.log('Tasks:', tasks);
         return tasks; // Returns an array of task documents
     } catch (error) {
         console.error('Error getting all tasks:', error);
