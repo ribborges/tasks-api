@@ -66,14 +66,14 @@ async function createTask(req: Request, res: Response) {
 
 async function getUserTasks(req: Request, res: Response) {
     try {
-        const { userId } = req.body;
+        const { userId } = req.query;
 
         if (!userId) {
             res.status(400).send('Missing user ID');
             return;
         }
 
-        const tasks = await findUserTasks(userId);
+        const tasks = await findUserTasks(ObjectId.createFromHexString(userId as string));
 
         res.status(200).json(tasks);
     } catch (error: any) {
