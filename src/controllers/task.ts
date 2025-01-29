@@ -3,6 +3,7 @@ import { ObjectId } from 'mongodb';
 import { get } from 'lodash';
 
 import { findTask, findUserTasks, updateTask, insertTask, deleteTask } from '@/services/task';
+import { TaskSchema } from '@/types/task';
 
 async function getTask(req: Request, res: Response) {
     try {
@@ -73,9 +74,24 @@ async function getUserTasks(req: Request, res: Response) {
             return;
         }
 
-        const tasks = await findUserTasks(ObjectId.createFromHexString(userId as string));
+        const tasks = await findUserTasks(ObjectId.createFromHexString(userId as string)) as ({ _id: ObjectId } & TaskSchema)[];
 
-        res.status(200).json(tasks);
+        if (!tasks) {
+            res.status(404).send('Tasks not found');
+            return;
+        }
+
+        res.status(200).json(tasks.map(task => ({
+            id: task._id,
+            categoryId: task.categoryId,
+            userId: task.userId,
+            name: task.name,
+            description: task.description,
+            status: task.status,
+            isImportant: task.isImportant,
+            createdAt: task.createdAt,
+            updatedAt: task.updatedAt
+        })));
     } catch (error: any) {
         console.error('Error getting user tasks:', error);
         res.status(500).send('Internal server error');
