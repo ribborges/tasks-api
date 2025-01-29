@@ -7,7 +7,7 @@ import { findTask } from '@/services/task';
 async function userOwnsTask(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
-        const currentId = get(req, 'identity.id');
+        const currentId = get(req, 'identity.id') as unknown as ObjectId | null;
 
         if (!currentId) {
             res.status(401).json({ message: 'Unauthorized' });
@@ -21,7 +21,7 @@ async function userOwnsTask(req: Request, res: Response, next: NextFunction) {
             return;
         }
 
-        if (task.userId.toString() !== currentId) {
+        if (task.userId.toString() !== currentId.toString()) {
             res.status(403).json({ message: 'Forbidden' });
             return;
         }
