@@ -10,7 +10,7 @@ async function isAuth(req: Request, res: Response, next: NextFunction) {
         const token = req.cookies["token"];
 
         if (!token) {
-            res.status(401).send("Unauthorized");
+            res.status(401).send("Unauthorized: Missing token");
             return;
         }
 
@@ -27,29 +27,29 @@ async function isAuth(req: Request, res: Response, next: NextFunction) {
         next();
     } catch (error) {
         console.error(error);
-        res.status(401).send("Unauthorized");
+        res.status(500).send("Internal server error");
     }
 }
 
 const isOwner = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
-        const currentId = get(req, 'identity._id') as unknown as string;
+        const currentId = get(req, 'identity.id') as unknown as ObjectId | null;
 
         if (!currentId) {
-            res.status(401).json({ message: 'Unauthorized' });
+            res.status(401).send('Unauthorized');
             return;
         }
 
         if (currentId.toString() !== id) {
-            res.status(403).json({ message: 'Forbidden' });
+            res.status(403).send('Forbidden');
             return;
         }
 
         next();
     } catch (error) {
         console.error('Error checking ownership:', error);
-        res.status(500).json({ message: 'Error checking ownership' });
+        res.status(500).send('Error checking ownership');
     }
 };
 
