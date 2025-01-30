@@ -16,7 +16,6 @@ async function findUserCategories(userId: ObjectId) {
 
         const categories = await collection.find({ userId: userId }).toArray();
 
-        console.log('Categories:', categories);
         return categories; // Returns an array of category documents
     } catch (error) {
         console.error('Error getting all categories:', error);

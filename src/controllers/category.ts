@@ -3,19 +3,27 @@ import { ObjectId } from 'mongodb';
 import { get } from 'lodash';
 
 import { insertCategory, deleteCategory, findUserCategories, findCategory, updateCategory } from '@/services/category';
+import { CategorySchema } from '@/types/category';
 
 async function getUserCategories(req: Request, res: Response) {
     try {
-        const { userId } = req.body;
+        const { userId } = req.query;
 
         if (!userId) {
             res.status(400).send('Missing user ID');
             return;
         }
 
-        const categories = await findUserCategories(ObjectId.createFromHexString(userId));
+        const categories = await findUserCategories(ObjectId.createFromHexString(userId as string)) as ({ _id: ObjectId } & CategorySchema)[];
 
-        res.status(200).send(categories);
+        res.status(200).send(categories.map(category => ({
+            id: category._id,
+            userId: category.userId,
+            name: category.name,
+            color: category.color,
+            createdAt: category.createdAt,
+            updatedAt: category.updatedAt
+        })));
     } catch (error) {
         res.status(500).send('Error getting all tasks');
     }
