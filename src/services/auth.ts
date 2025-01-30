@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { merge } from "lodash";
 
 import client from "@/database/client";
-import { closeDB, connectDB, dbName } from "@/database/operations";
+import { dbName } from "@/database/operations";
 import { UserSchema } from "@/types/user";
 import { secret } from "@/config/env";
 import filterNullFields from "@/util/filterNullFields";
@@ -12,7 +12,6 @@ const collectionName = 'users';
 
 async function findUserByAuth({ username, email }: { username?: string, email?: string }) {
     try {
-        await connectDB();
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
@@ -24,8 +23,6 @@ async function findUserByAuth({ username, email }: { username?: string, email?: 
     } catch (error) {
         console.error('Error when searching for user:', error);
         throw new Error('Error when searching for user');
-    } finally {
-        await closeDB();
     }
 }
 
@@ -34,7 +31,6 @@ async function getUserByToken(token: string) {
         const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
         const userId = ObjectId.createFromHexString(decoded.id);
 
-        await connectDB();
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
@@ -46,14 +42,11 @@ async function getUserByToken(token: string) {
     } catch (error) {
         console.error('Error when searching for user by token:', error);
         throw new Error('Error when searching for user by token');
-    } finally {
-        await closeDB();
     }
 }
 
 async function insertUser(data: UserSchema) {
     try {
-        await connectDB();
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
@@ -72,8 +65,6 @@ async function insertUser(data: UserSchema) {
     } catch (error) {
         console.error('Error creating user:', error);
         throw new Error('Error creating user');
-    } finally {
-        await closeDB();
     }
 };
 

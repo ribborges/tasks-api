@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { merge } from "lodash";
 
 import client from "@/database/client";
-import { closeDB, connectDB, dbName } from "@/database/operations";
+import { dbName } from "@/database/operations";
 import filterNullFields from "@/util/filterNullFields";
 import { AuthSchema, UserSchema } from "@/types/user";
 
@@ -10,7 +10,6 @@ const collectionName = 'users';
 
 async function findAllUsers() {
     try {
-        await connectDB();
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
@@ -21,14 +20,11 @@ async function findAllUsers() {
     } catch (error) {
         console.error('Error getting all users:', error);
         throw new Error('Error getting all users');
-    } finally {
-        await closeDB();
     }
 }
 
 async function findUser(id: ObjectId) {
     try {
-        await connectDB();
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
@@ -38,14 +34,11 @@ async function findUser(id: ObjectId) {
     } catch (error) {
         console.error('Error getting user by ID:', error);
         throw new Error('Error getting user by ID');
-    } finally {
-        await closeDB();
     }
 };
 
 async function deleteUser(id: ObjectId) {
     try {
-        await connectDB();
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
@@ -56,14 +49,11 @@ async function deleteUser(id: ObjectId) {
     } catch (error) {
         console.error('Error deleting user:', error);
         throw new Error('Error deleting user');
-    } finally {
-        await closeDB();
     }
 };
 
 async function updateUser(id: ObjectId, data: UserSchema) {
     try {
-        await connectDB();
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
@@ -80,14 +70,11 @@ async function updateUser(id: ObjectId, data: UserSchema) {
     } catch (error) {
         console.error('Error updating user:', error);
         throw new Error('Error updating user');
-    } finally {
-        await closeDB();
     }
 };
 
 async function updatePassword(id: ObjectId, auth: AuthSchema) {
     try {
-        await connectDB();
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
@@ -102,8 +89,6 @@ async function updatePassword(id: ObjectId, auth: AuthSchema) {
     } catch (error) {
         console.error('Error updating password:', error);
         throw new Error('Error updating password');
-    } finally {
-        await closeDB();
     }
 }
 

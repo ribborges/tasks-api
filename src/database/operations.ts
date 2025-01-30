@@ -4,22 +4,22 @@ const dbName = 'task-manager';
 
 // Connect to the MongoDB database
 async function connectDB() {
-    try {
-        await client.connect();
-        console.log('Connected to MongoDB');
-    } catch (error) {
-        console.error('Error connecting to MongoDB:', error);
-    }
+    await client.connect()
+        .then(() => {
+            console.log('Connected to MongoDB');
+        }).catch((error) => {
+            console.error('Error connecting to MongoDB:', error);
+        });
 }
 
 // Close the MongoDB connection
 async function closeDB() {
-    try {
-        await client.close();
-        console.log('Closed MongoDB connection');
-    } catch (error) {
-        console.error('Error closing MongoDB connection:', error);
-    }
+    await client.close()
+        .then(() => {
+            console.log('Closed MongoDB connection');
+        }).catch((error) => {
+            console.error('Error closing MongoDB connection:', error);
+        });
 }
 
 async function setupDB() {
