@@ -5,6 +5,7 @@ import { ObjectId } from 'mongodb';
 import { findAllUsers, findUser, deleteUser, updateUser, updatePassword } from '@/services/user';
 import { hashPassword, random } from '@/helpers/auth';
 import { UserSchema } from '@/types/user';
+import { findUserByAuth } from '@/services/auth';
 
 async function getLogguedUser(req: Request, res: Response) {
     try {
@@ -68,7 +69,17 @@ async function removeUser(req: Request, res: Response) {
 async function changeUser(req: Request, res: Response) {
     try {
         const { id } = req.params;
-        const { username, name, profilePic } = req.body;
+        const { username, name, email, profilePic } = req.body;
+
+        if (!id) {
+            res.status(400).send('Missing user ID');
+            return;
+        }
+
+        if (username && await findUserByAuth({ username })) {
+            res.status(400).send('Username already in use');
+            return;
+        }
 
         const user = await findUser(ObjectId.createFromHexString(id));
 
@@ -80,6 +91,7 @@ async function changeUser(req: Request, res: Response) {
         await updateUser(ObjectId.createFromHexString(id), {
             username,
             name,
+            email,
             profilePic
         });
 
