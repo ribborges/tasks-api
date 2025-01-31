@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb';
 import { get } from 'lodash';
 
 import { findTask, findUserTasks, updateTask, insertTask, deleteTask } from '@/services/task';
-import { TaskSchema } from '@/types/task';
+import { TaskSchema, TaskStatus } from '@/types/task';
 
 async function getTask(req: Request, res: Response) {
     try {
@@ -30,22 +30,23 @@ async function getTask(req: Request, res: Response) {
 
 async function createTask(req: Request, res: Response) {
     try {
-        const { id } = get(req, 'identity', { id: null });
+        const id = get(req, 'identity.id') as unknown as ObjectId | null;
 
         if (!id) {
             res.status(401).send('Unauthorized');
             return;
         }
 
-        const { categoryId, name, description, status, isImportant } = req.body;
+        const { categoryId, name, description, isImportant } = req.body;
+        const status = req.body.status as unknown as TaskStatus;
 
         if (!categoryId || !name || !status) {
-            res.status(400).json({ message: 'Missing required fields' });
+            res.status(400).send('Missing required fields');
             return;
         }
 
-        if (status !== "pending" || "completed" || "in-progress") {
-            res.status(400).json({ message: 'Invalid status' });
+        if (status !== "pending" && status !== "completed" && status !== "in-progress") {
+            res.status(400).send('Invalid status');
             return;
         }
 
@@ -58,10 +59,19 @@ async function createTask(req: Request, res: Response) {
             isImportant
         })
 
-        res.status(201).json(task);
+        res.status(201).json({
+            id: task._id,
+            categoryId: task.categoryId,
+            userId: task.userId,
+            name: task.name,
+            description: task.description,
+            status: task.status,
+            isImportant: task.isImportant,
+            createdAt: task.createdAt
+        });
     } catch (error) {
         console.error('Error creating task:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).send('Internal server error');
     }
 }
 

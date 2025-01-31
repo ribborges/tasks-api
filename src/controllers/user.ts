@@ -106,10 +106,7 @@ async function changePassword(req: Request, res: Response) {
     try {
         const { id } = req.params;
         const { password, newPassword } = req.body;
-        const u = get(req, 'identity') as unknown as ({ id: ObjectId } & UserSchema) | null;
         const auth = get(req, 'identity.auth') as unknown as AuthSchema | null;
-
-        console.log('User:', u);
 
         const user = await findUser(ObjectId.createFromHexString(id));
 
