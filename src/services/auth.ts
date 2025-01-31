@@ -34,7 +34,7 @@ async function getUserByToken(token: string) {
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
-        const user = await collection.findOne({ _id: userId }, { projection: { auth: 0 } }) as WithId<Document>;
+        const user = await collection.findOne({ _id: userId }) as WithId<Document>;
 
         if (!user) return null;
 

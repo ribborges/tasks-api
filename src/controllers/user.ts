@@ -4,7 +4,7 @@ import { ObjectId } from 'mongodb';
 
 import { findAllUsers, findUser, deleteUser, updateUser, updatePassword } from '@/services/user';
 import { hashPassword, random } from '@/helpers/auth';
-import { UserSchema } from '@/types/user';
+import { AuthSchema, UserSchema } from '@/types/user';
 import { findUserByAuth } from '@/services/auth';
 
 async function getLogguedUser(req: Request, res: Response) {
@@ -105,21 +105,35 @@ async function changeUser(req: Request, res: Response) {
 async function changePassword(req: Request, res: Response) {
     try {
         const { id } = req.params;
-        const { password } = req.body;
+        const { password, newPassword } = req.body;
+        const u = get(req, 'identity') as unknown as ({ id: ObjectId } & UserSchema) | null;
+        const auth = get(req, 'identity.auth') as unknown as AuthSchema | null;
+
+        console.log('User:', u);
 
         const user = await findUser(ObjectId.createFromHexString(id));
+
+        if (!auth) {
+            res.status(401).send('Unauthorized: Missing auth data');
+            return;
+        }
 
         if (!user) {
             res.status(404).send('User not found');
             return;
         }
 
-        if (!password || !id) {
+        if (!password || !newPassword || !id) {
             res.status(400).send('Missing required fields');
             return;
         }
 
-        if (password.length < 8) {
+        if (auth.password !== hashPassword(auth.salt, password)) {
+            res.status(400).send('Old password is incorrect');
+            return;
+        }
+
+        if (newPassword.length < 8) {
             res.status(400).send('Password must be at least 8 characters long');
             return;
         }

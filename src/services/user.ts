@@ -78,11 +78,11 @@ async function updatePassword(id: ObjectId, auth: AuthSchema) {
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
-        merge(auth, { updatedAt: new Date() });
+        merge({ auth }, { updatedAt: new Date() });
 
         const result = await collection.updateOne(
             { _id: id },
-            { $set: auth }
+            { $set: { auth } }
         );
 
         return result; // Returns an UpdateResult object
