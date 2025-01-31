@@ -43,7 +43,9 @@ async function insertCategory(data: CategorySchema) {
 
         const filteredData = filterNullFields(data);
         
-        merge(filteredData, { createdAt: new Date() });
+        const createdAt = new Date();
+
+        merge(filteredData, { createdAt });
 
         const result = await collection.insertOne(filteredData);
 
@@ -51,7 +53,8 @@ async function insertCategory(data: CategorySchema) {
 
         return {
             _id: result.insertedId,
-            ...data
+            ...data,
+            createdAt
         }; // Returns the category document
     } catch (error) {
         console.error('Error creating category:', error);

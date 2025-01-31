@@ -53,7 +53,7 @@ async function getCategory(req: Request, res: Response) {
 
 async function createCategory(req: Request, res: Response) {
     try {
-        const { id } = get(req, 'identity', { id: null });
+        const id = get(req, 'identity.id') as unknown as ObjectId | null;
 
         if (!id) {
             res.status(401).send('Unauthorized');
@@ -67,13 +67,18 @@ async function createCategory(req: Request, res: Response) {
             return;
         }
 
-        await insertCategory({
+        const category = await insertCategory({
             userId: id,
             name,
             color
         });
 
-        res.status(201).send('Category created successfully');
+        res.status(201).json({
+            id: category._id,
+            userId: category.userId,
+            name: category.name,
+            color: category.color
+        });
     } catch (error) {
         res.status(500).send('Error creating category');
     }
