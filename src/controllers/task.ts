@@ -37,7 +37,7 @@ async function createTask(req: Request, res: Response) {
             return;
         }
 
-        const { categoryId, name, description, isImportant } = req.body;
+        const { categoryId, name, description, dueDate, isImportant } = req.body;
         const status = req.body.status as unknown as TaskStatus;
 
         if (!categoryId || !name || !status) {
@@ -55,6 +55,7 @@ async function createTask(req: Request, res: Response) {
             userId: id,
             name,
             description,
+            dueDate: dueDate ? new Date(dueDate) : undefined,
             status,
             isImportant
         })
@@ -65,6 +66,7 @@ async function createTask(req: Request, res: Response) {
             userId: task.userId,
             name: task.name,
             description: task.description,
+            dueDate: task.dueDate,
             status: task.status,
             isImportant: task.isImportant,
             createdAt: task.createdAt
@@ -97,6 +99,7 @@ async function getUserTasks(req: Request, res: Response) {
             userId: task.userId,
             name: task.name,
             description: task.description,
+            dueDate: task.dueDate,
             status: task.status,
             isImportant: task.isImportant,
             createdAt: task.createdAt,
@@ -111,7 +114,7 @@ async function getUserTasks(req: Request, res: Response) {
 async function changeTask(req: Request, res: Response) {
     try {
         const { id } = req.params;
-        const { categoryId, name, description, status, isImportant } = req.body;
+        const { categoryId, name, description, dueDate, status, isImportant } = req.body;
 
         const task = await findTask(ObjectId.createFromHexString(id));
 
@@ -124,6 +127,7 @@ async function changeTask(req: Request, res: Response) {
             categoryId: categoryId ? ObjectId.createFromHexString(categoryId) : task.categoryId,
             name,
             description,
+            dueDate: dueDate ? new Date(dueDate) : task.dueDate,
             status,
             isImportant
         });
