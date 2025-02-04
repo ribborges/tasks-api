@@ -8,7 +8,7 @@ import { connectDB } from "@/database/operations";
 
 // Set up the express app
 const app = express();
-const port = appPort || 3000;
+const port = appPort || 8000;
 
 app.use(cors());
 app.use(express.json());
