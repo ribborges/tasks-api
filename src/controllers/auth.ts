@@ -6,6 +6,7 @@ import { UserSchema } from '@/types/user';
 import { insertUser, findUserByAuth } from '@/services/auth';
 import { hashPassword, genToken, random } from '@/helpers/auth';
 import { secret } from '@/config/env';
+import { clearCookieOpt, cookieOpt } from '@/config/cookie';
 
 async function login(req: Request, res: Response) {
     try {
@@ -37,13 +38,7 @@ async function login(req: Request, res: Response) {
 
         const token = genToken(user._id.toString());
 
-        res.cookie('token', token, {
-            path: '/',
-            httpOnly: true,
-            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-            sameSite: true,
-            secure: true
-        });
+        res.cookie('token', token, cookieOpt);
 
         res.status(201).json({
             id: user._id,
@@ -96,13 +91,7 @@ async function register(req: Request, res: Response) {
 
         const token = genToken(user._id.toString());
 
-        res.cookie('token', token, {
-            path: '/',
-            httpOnly: true,
-            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-            sameSite: true,
-            secure: true
-        });
+        res.cookie('token', token, cookieOpt);
 
         res.status(201).json({
             id: user._id,
@@ -122,12 +111,7 @@ async function register(req: Request, res: Response) {
 
 async function logout(req: Request, res: Response) {
     try {
-        res.clearCookie('token', {
-            path: '/',
-            httpOnly: true,
-            sameSite: "none",
-            secure: true
-        });
+        res.clearCookie('token', clearCookieOpt);
 
         res.status(200).send('Logged out successfully');
 
