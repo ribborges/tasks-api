@@ -5,14 +5,16 @@ const cookieOpt: CookieOptions = {
     httpOnly: true,
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     sameSite: "none",
-    secure: true
+    secure: true,
+    partitioned: true
 }
 
 const clearCookieOpt: CookieOptions = {
     path: '/',
     httpOnly: true,
     sameSite: "none",
-    secure: true
+    secure: true,
+    partitioned: true
 }
 
 export { cookieOpt, clearCookieOpt };
