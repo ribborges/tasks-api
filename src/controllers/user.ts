@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 import { ObjectId } from 'mongodb';
 
 import { findAllUsers, findUser, deleteUser, updateUser, updatePassword } from '@/services/user';

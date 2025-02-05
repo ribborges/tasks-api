@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ObjectId } from 'mongodb';
-import { get, merge } from 'lodash';
+import { get, merge } from 'lodash-es';
 
 import { getUserByToken } from '@/services/auth';
 import { UserSchema } from '@/types/user';

@@ -1,6 +1,6 @@
 import { WithId, ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
-import { merge } from "lodash";
+import { merge } from 'lodash-es';
 
 import client from "@/database/client";
 import { dbName } from "@/database/operations";

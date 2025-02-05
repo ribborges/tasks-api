@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 
 import { insertCategory, deleteCategory, findUserCategories, findCategory, updateCategory } from '@/services/category';
 import { CategorySchema } from '@/types/category';

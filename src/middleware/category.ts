@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 import { ObjectId } from 'mongodb';
 
 import { findCategory } from '@/services/category';

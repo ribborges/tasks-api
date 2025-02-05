@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 
 import { findTask, findUserTasks, updateTask, insertTask, deleteTask } from '@/services/task';
 import { TaskSchema, TaskStatus } from '@/types/task';

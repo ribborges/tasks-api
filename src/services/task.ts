@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { merge } from "lodash";
+import { merge } from 'lodash-es';
 
 import client from "@/database/client";
 import { dbName } from "@/database/operations";
