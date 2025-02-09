@@ -40,7 +40,7 @@ async function createTask(req: Request, res: Response) {
         const { categoryId, name, description, dueDate, isImportant } = req.body;
         const status = req.body.status as unknown as TaskStatus;
 
-        if (!categoryId || !name || !status) {
+        if (!name || !status) {
             res.status(400).send('Missing required fields');
             return;
         }
@@ -51,7 +51,7 @@ async function createTask(req: Request, res: Response) {
         }
 
         const task = await insertTask({
-            categoryId: ObjectId.createFromHexString(categoryId),
+            categoryId: categoryId ? ObjectId.createFromHexString(categoryId) : undefined,
             userId: id,
             name,
             description,
