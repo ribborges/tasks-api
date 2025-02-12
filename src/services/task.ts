@@ -62,7 +62,7 @@ async function insertTask(data: TaskSchema) {
     }
 }
 
-async function updateTask(id: string, data: TaskSchema) {
+async function updateTask(id: ObjectId, data: TaskSchema) {
     try {
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
@@ -72,7 +72,7 @@ async function updateTask(id: string, data: TaskSchema) {
         merge(filteredData, { updatedAt: new Date() });
 
         const result = await collection.updateOne(
-            { _id: ObjectId.createFromHexString(id) },
+            { _id: id },
             { $set: filteredData }
         );
 

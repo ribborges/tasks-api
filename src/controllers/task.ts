@@ -123,7 +123,7 @@ async function changeTask(req: Request, res: Response) {
             return;
         }
 
-        await updateTask(id, {
+        await updateTask(ObjectId.createFromHexString(id), {
             categoryId: categoryId ? ObjectId.createFromHexString(categoryId) : task.categoryId,
             name,
             description,
