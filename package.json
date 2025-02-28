@@ -1,16 +1,21 @@
 {
   "name": "tasks-api",
+  "decription": "A simple tasks/to-do app with categories",
   "version": "1.0.1",
   "main": "index.js",
+  "type": "module",
+  "license": "MPL-2.0",
+  "repository": "https://github.com/ribborges/tasks-api",
+  "author": {
+    "name": "Richard Borges",
+    "email": "contato@richardborges.dev",
+    "url": "https://richardborges.dev"
+  },
   "scripts": {
     "dev": "tsx watch --env-file .env src/server.ts",
     "build": "tsup src --format esm",
     "start": "node dist/server.js"
   },
-  "author": "Richard",
-  "license": "ISC",
-  "description": "",
-  "type": "module",
   "devDependencies": {
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
