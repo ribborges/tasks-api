@@ -4,7 +4,7 @@ const cookieOpt: CookieOptions = {
     path: '/',
     httpOnly: true,
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-    sameSite: "lax",
+    sameSite: "none",
     secure: true,
     partitioned: true
 }
@@ -12,7 +12,7 @@ const cookieOpt: CookieOptions = {
 const clearCookieOpt: CookieOptions = {
     path: '/',
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "none",
     secure: true,
     partitioned: true
 }
