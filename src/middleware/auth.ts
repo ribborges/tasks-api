@@ -7,7 +7,15 @@ import { UserSchema } from '@/types/user';
 
 async function isAuth(req: Request, res: Response, next: NextFunction) {
     try {
-        const token = req.cookies["token"];
+        let token = req.cookies["token"];
+
+        // If no token in cookies, check Authorization header
+        if (!token) {
+            const authHeader = req.headers.authorization;
+            if (authHeader && authHeader.startsWith('Bearer ')) {
+                token = authHeader.substring(7);
+            }
+        }
 
         if (!token) {
             res.status(401).send("Unauthorized: Missing token");
