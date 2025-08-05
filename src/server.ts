@@ -3,12 +3,10 @@ import cors from "cors";
 import cookieParser from 'cookie-parser';
 
 import router from '@/routes';
-import { appPort, clientURL } from "@/config/env";
-import { connectDB } from "@/database/operations";
+import { clientURL } from "@/config/env";
 
-// Set up the express app
+// Create and setup express app
 const app = express();
-const port = appPort || 8000;
 
 app.use(cors({
     origin: clientURL,
@@ -22,9 +20,4 @@ app.use(cookieParser());
 
 app.use('/', router());
 
-connectDB();
-
-// Start the server
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+export default app;

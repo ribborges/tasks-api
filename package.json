@@ -12,9 +12,9 @@
     "url": "https://richardborges.dev"
   },
   "scripts": {
-    "dev": "tsx watch --env-file .env src/server.ts",
+    "dev": "tsx watch --env-file .env src/index.ts",
     "build": "tsup src --format esm",
-    "start": "node dist/server.js"
+    "start": "node dist/index.js"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.8",
