@@ -1,9 +1,9 @@
 import { Router } from "express";
 
-import auth from "./auth";
-import user from "./user";
-import category from "./category";
-import task from "./task";
+import auth from "./modules/auth";
+import user from "./modules/user";
+import category from "./modules/category";
+import task from "./modules/task";
 
 const router = Router();
 
