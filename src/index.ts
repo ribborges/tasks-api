@@ -17,5 +17,4 @@ trackConnections(server);
 // Handle shutdown signals
 process.on('SIGTERM', gracefulShutdown('SIGTERM', server));
 process.on('SIGINT', gracefulShutdown('SIGINT', server));
-process.on('SIGQUIT', gracefulShutdown('SIGQUIT', server));
 process.on('uncaughtException', gracefulShutdown('uncaughtException', server));
