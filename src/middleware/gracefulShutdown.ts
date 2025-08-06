@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 let isShuttingDown = false;
 
+// Middleware to handle graceful shutdown state in requests
 function gracefulShutdownMiddleware(req: Request, res: Response, next: NextFunction) {
     if (isShuttingDown) {
         res.set('Connection', 'close');
@@ -12,6 +13,7 @@ function gracefulShutdownMiddleware(req: Request, res: Response, next: NextFunct
     next();
 };
 
+// Function to update the shutdown state
 function setIsShuttingDown(value: boolean) {
     isShuttingDown = value;
 };
